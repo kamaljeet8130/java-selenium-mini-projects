@@ -21,6 +21,16 @@ public class LoginTest {
         validUserLogin(driver,"student","Password123");
         testLogin_WithValidCredentials_ShouldDisplaySuccessMessage(driver,"student","Password123");
         testLogin_WithInvalidUsername_ShouldShowUsernameError(driver,"dfdf","Password123");
+        testLogin_WithInvalidPassword_ShouldShowPasswordError(driver,"student","dfjadr");
+        testLogin_WithInvalidUsernameAndPassword_ShouldPrioritizeUsernameError(driver,"sdfdsf","Password123");
+        testLogin_WithInvalidUsernameAndPassword_ShouldPrioritizeUsernameError(driver,"studedfnt","dfdsf");
+        testLogin_WithEmptyUsername_ShouldShowUsernameError(driver,"","Password123");
+        testLogin_WithEmptyPassword_ShouldShowPasswordError(driver,"student","");
+        testLogin_WithEmptyFields_ShouldShowUsernameErrorFirst(driver,"","");
+        testLogin_WithSpecialCharactersInUsername_ShouldRejectLogin(driver,"fdf343434!@#!#@!@","Password123");
+        testLogin_WithSpecialCharactersInPassword_ShouldRejectLogin(driver,"student","534@#@!#!");
+        testBackNavigation_AfterLogout_ShouldNotAllowSecureAccess(driver,"student","Password123");
+        testBackNavigation_WhileLoggedIn_ShouldStayInSecureArea(driver,"student","Password123");
         tearDown(driver);
 
     }
@@ -58,8 +68,133 @@ public class LoginTest {
         WebElement errorMessage = wait.until(
                 ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div#error"))
         );
-        System.out.println( " error message :::: \n" +
-                errorMessage.getText() );
+        Assert.assertTrue(errorMessage.isDisplayed());
+        Assert.assertEquals(errorMessage.getText(),"Your username is invalid!","username error message failed");
+    }
+    private static void testLogin_WithInvalidPassword_ShouldShowPasswordError(WebDriver driver,String userName,String password){
+        driver.get(url);
+        driver.findElement(userNameLocator).sendKeys(userName);
+        driver.findElement(passwordLocator).sendKeys(password);
+        driver.findElement(submitButtonLocator).click();
+        WebDriverWait wait = new WebDriverWait(driver,Duration.ofSeconds(5));
+        WebElement errorMessage = wait.until(
+                ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div#error"))
+        );
+        Assert.assertTrue(errorMessage.isDisplayed());
+        Assert.assertEquals(errorMessage.getText(),"Your password is invalid!","password error message failed");
+    }
+
+    private static void testLogin_WithInvalidUsernameAndPassword_ShouldPrioritizeUsernameError(WebDriver driver,String userName,String password){
+        driver.get(url);
+        driver.findElement(userNameLocator).sendKeys(userName);
+        driver.findElement(passwordLocator).sendKeys(password);
+        driver.findElement(submitButtonLocator).click();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        WebElement errorMessage = wait.until(
+                ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div#error"))
+        );
+        Assert.assertTrue(errorMessage.isDisplayed());
+        Assert.assertEquals(errorMessage.getText(),"Your username is invalid!","username error message failed");
+    }
+    private static void testLogin_WithEmptyUsername_ShouldShowUsernameError(WebDriver driver,String userName,String password){
+        driver.get(url);
+        driver.findElement(userNameLocator).sendKeys(userName);
+        driver.findElement(passwordLocator).sendKeys(password);
+        driver.findElement(submitButtonLocator).click();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        WebElement errorMessage = wait.until(
+                ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div#error"))
+        );
+        Assert.assertTrue(errorMessage.isDisplayed());
+        Assert.assertEquals(errorMessage.getText(),"Your username is invalid!","username error message failed");
+    }
+    private static void testLogin_WithEmptyPassword_ShouldShowPasswordError(WebDriver driver,String userName,String password){
+        driver.get(url);
+        driver.findElement(userNameLocator).sendKeys(userName);
+        driver.findElement(passwordLocator).sendKeys(password);
+        driver.findElement(submitButtonLocator).click();
+        WebDriverWait wait = new WebDriverWait(driver,Duration.ofSeconds(5));
+        WebElement errorMessage = wait.until(
+                ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div#error"))
+        );
+        Assert.assertTrue(errorMessage.isDisplayed());
+        Assert.assertEquals(errorMessage.getText(),"Your password is invalid!","password error message failed");
+    }
+    private static void testLogin_WithEmptyFields_ShouldShowUsernameErrorFirst(WebDriver driver,String userName,String password){
+        driver.get(url);
+        driver.findElement(userNameLocator).sendKeys(userName);
+        driver.findElement(passwordLocator).sendKeys(password);
+        driver.findElement(submitButtonLocator).click();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        WebElement errorMessage = wait.until(
+                ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div#error"))
+        );
+        Assert.assertTrue(errorMessage.isDisplayed());
+        Assert.assertEquals(errorMessage.getText(),"Your username is invalid!","username error message failed");
+    }
+    private static void testLogin_WithSpecialCharactersInUsername_ShouldRejectLogin(WebDriver driver,String userName,String password){
+        driver.get(url);
+        driver.findElement(userNameLocator).sendKeys(userName);
+        driver.findElement(passwordLocator).sendKeys(password);
+        driver.findElement(submitButtonLocator).click();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        WebElement errorMessage = wait.until(
+                ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div#error"))
+        );
+        Assert.assertTrue(errorMessage.isDisplayed());
+        Assert.assertEquals(errorMessage.getText(),"Your username is invalid!","username error message failed");
+    }
+    private static void testLogin_WithSpecialCharactersInPassword_ShouldRejectLogin(WebDriver driver,String userName ,String password){
+        driver.get(url);
+        driver.findElement(userNameLocator).sendKeys(userName);
+        driver.findElement(passwordLocator).sendKeys(password);
+        driver.findElement(submitButtonLocator).click();
+        WebDriverWait wait = new WebDriverWait(driver,Duration.ofSeconds(5));
+        WebElement errorMessage = wait.until(
+                ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div#error"))
+        );
+        Assert.assertTrue(errorMessage.isDisplayed());
+        Assert.assertEquals(errorMessage.getText(),"Your password is invalid!","password error message failed");
+    }
+    private static void testBackNavigation_AfterLogout_ShouldNotAllowSecureAccess(WebDriver driver,String userName,String password){
+        driver.get(url);
+        driver.findElement(userNameLocator).sendKeys(userName);
+        driver.findElement(passwordLocator).sendKeys(password);
+        driver.findElement(submitButtonLocator).click();
+        WebElement logoutBtn = driver.findElement(By.xpath("//div/a[text()=\"Log out\"]"));
+        Assert.assertTrue(logoutBtn.isDisplayed());
+        Assert.assertTrue(logoutBtn.isEnabled());
+        logoutBtn.click();
+        System.out.println(driver.getCurrentUrl()  + "\n " +
+                "page url after logout");
+        System.out.println(driver.getTitle() + "\n" +
+                "page title after logout");
+        driver.navigate().back();
+        Assert.assertFalse(logoutBtn.isDisplayed());
+        System.out.println(driver.getCurrentUrl() + "\n" +
+                "page url after clicking browser back button");
+        System.out.println(driver.getTitle() + "\n" +
+                "page title after clicking browser back button");
+    }
+    private static void testBackNavigation_WhileLoggedIn_ShouldStayInSecureArea(WebDriver driver,String userName,String password){
+        driver.get(url);
+        driver.findElement(userNameLocator).sendKeys(userName);
+        driver.findElement(passwordLocator).sendKeys(password);
+        driver.findElement(submitButtonLocator).click();
+        WebElement header = driver.findElement(By.tagName("h1"));
+        Assert.assertEquals(header.getText(),"Logged In Successfully","Header Validation Failed");
+        System.out.println(driver.getCurrentUrl()  + "\n " +
+                "page url after logout");
+        System.out.println(driver.getTitle() + "\n" +
+                "page title after logout");
+        driver.navigate().back();
+        WebElement logoutBtn = driver.findElement(By.xpath("//div/a[text()=\"Log out\"]"));
+        Assert.assertFalse(logoutBtn.isDisplayed());
+        System.out.println(driver.getCurrentUrl() + "\n" +
+                "page url after clicking browser back button");
+        System.out.println(driver.getTitle() + "\n" +
+                "page title after clicking browser back button");
+
     }
     public static void tearDown(WebDriver driver){
         driver.quit();
