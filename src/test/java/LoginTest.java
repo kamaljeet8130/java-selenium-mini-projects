@@ -4,17 +4,22 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import pages.LoginPage;
 
 import java.time.Duration;
 
 public class LoginTest extends BaseTest {
+    LoginPage loginPage;
+    @BeforeMethod
+    public void login(){
+        loginPage = new LoginPage(driver);
+        loginPage.openLoginPage();
+    }
 
     @Test
     public void validUserLogin() {
-        LoginPage loginPage = new LoginPage(driver);
-        loginPage.openLoginPage();
         loginPage.login("student", "Password123");
         String expectedTitle = "Logged In Successfully | Practice Test Automation";
         Assert.assertEquals(driver.getTitle(), expectedTitle, "Title Validation Failed");
@@ -26,8 +31,6 @@ public class LoginTest extends BaseTest {
 
     @Test
     public void testLogin_WithValidCredentials_ShouldDisplaySuccessMessage() {
-        LoginPage loginPage = new LoginPage(driver);
-        loginPage.openLoginPage();
         loginPage.login("student", "Password123");
         WebElement header = driver.findElement(By.tagName("h1"));
         String headerText = header.getText();
@@ -36,8 +39,6 @@ public class LoginTest extends BaseTest {
 
     @Test
       public void testLogin_WithInvalidUsername_ShouldShowUsernameError() {
-        LoginPage loginPage = new LoginPage(driver);
-        loginPage.openLoginPage();
         loginPage.login("dfs", "Password123");
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
         WebElement errorMessage = wait.until(
@@ -49,8 +50,6 @@ public class LoginTest extends BaseTest {
 
     @Test
       public void testLogin_WithInvalidPassword_ShouldShowPasswordError() {
-        LoginPage loginPage = new LoginPage(driver);
-        loginPage.openLoginPage();
         loginPage.login("student", "adfdf");
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
         WebElement errorMessage = wait.until(
@@ -62,8 +61,6 @@ public class LoginTest extends BaseTest {
 
     @Test
       public void testLogin_WithInvalidUsernameAndPassword_ShouldPrioritizeUsernameError() {
-        LoginPage loginPage = new LoginPage(driver);
-        loginPage.openLoginPage();
         loginPage.login("adfd", "afsdf");
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
         WebElement errorMessage = wait.until(
@@ -75,8 +72,6 @@ public class LoginTest extends BaseTest {
 
     @Test
       public void testLogin_WithEmptyUsername_ShouldShowUsernameError() {
-        LoginPage loginPage = new LoginPage(driver);
-        loginPage.openLoginPage();
         loginPage.login("", "Password123");
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
         WebElement errorMessage = wait.until(
@@ -88,8 +83,6 @@ public class LoginTest extends BaseTest {
 
     @Test
       public void testLogin_WithEmptyPassword_ShouldShowPasswordError() {
-        LoginPage loginPage = new LoginPage(driver);
-        loginPage.openLoginPage();
         loginPage.login("student", "");
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
         WebElement errorMessage = wait.until(
@@ -101,8 +94,6 @@ public class LoginTest extends BaseTest {
 
     @Test
       public void testLogin_WithEmptyFields_ShouldShowUsernameErrorFirst() {
-        LoginPage loginPage = new LoginPage(driver);
-        loginPage.openLoginPage();
         loginPage.login("", "");
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
         WebElement errorMessage = wait.until(
@@ -114,8 +105,6 @@ public class LoginTest extends BaseTest {
 
     @Test
       public void testLogin_WithSpecialCharactersInUsername_ShouldRejectLogin() {
-        LoginPage loginPage = new LoginPage(driver);
-        loginPage.openLoginPage();
         loginPage.login("#@$#$", "Password");
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
         WebElement errorMessage = wait.until(
@@ -127,8 +116,6 @@ public class LoginTest extends BaseTest {
 
     @Test
       public void testLogin_WithSpecialCharactersInPassword_ShouldRejectLogin() {
-        LoginPage loginPage = new LoginPage(driver);
-        loginPage.openLoginPage();
         loginPage.login("student", "#32Passwrod");
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
         WebElement errorMessage = wait.until(
@@ -140,8 +127,6 @@ public class LoginTest extends BaseTest {
 
     @Test
       public void testBackNavigation_AfterLogout_ShouldNotAllowSecureAccess() {
-        LoginPage loginPage = new LoginPage(driver);
-        loginPage.openLoginPage();
         loginPage.login("student", "Password123");
         WebElement logoutBtn = driver.findElement(By.xpath("//div/a[text()=\"Log out\"]"));
         Assert.assertTrue(logoutBtn.isDisplayed());
@@ -161,8 +146,6 @@ public class LoginTest extends BaseTest {
 
     @Test
       public void testBackNavigation_WhileLoggedIn_ShouldStayInSecureArea() {
-        LoginPage loginPage = new LoginPage(driver);
-        loginPage.openLoginPage();
         loginPage.login("student", "Password123");
         WebElement header = driver.findElement(By.tagName("h1"));
         Assert.assertEquals(header.getText(), "Logged In Successfully", "Header Validation Failed");
@@ -171,7 +154,7 @@ public class LoginTest extends BaseTest {
         System.out.println(driver.getTitle() + "\n" +
                 "page title after logout");
         driver.navigate().back();
-        WebElement logoutBtn = driver.findElement(By.xpath("//div/a[text()=\"Log out\"]"));
+         WebElement logoutBtn = driver.findElement(By.xpath("//div/a[text()=\"Log out\"]"));
         Assert.assertFalse(logoutBtn.isDisplayed());
         System.out.println(driver.getCurrentUrl() + "\n" +
                 "page url after clicking browser back button");
