@@ -4,20 +4,61 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.time.Duration;
 
 public class Waits {
-    @Test
-    public void waitsExample(){
-        WebDriver driver = new ChromeDriver();
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+    WebDriver driver;
+    String baseUrl = "https://the-internet.herokuapp.com";
+
+    @BeforeMethod
+    public void getDriver() {
+        driver = new ChromeDriver();
         driver.manage().window().maximize();
-        driver.get("https://the-internet.herokuapp.com/dynamic_loading/1");
+    }
+
+    @Test
+    public void elementOnPageThatIsHidden() {
+        String endpoint = "/dynamic_loading/1";
+        driver.get(baseUrl + endpoint);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
         WebElement startButton = driver.findElement(By.cssSelector("#start>button"));
-            startButton.click();
-         String text = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("finish"))).getText();
+        startButton.click();
+        String text = wait
+                .until(ExpectedConditions.visibilityOfElementLocated(By.id("finish")))
+                .getText();
         System.out.println(text);
     }
+
+    @Test
+    public void ElementRenderedAfterTheFact() {
+        driver.get(baseUrl + "/dynamic_loading/2");
+        WebElement startButton = driver.findElement(By.cssSelector("#start>button"));
+        if (startButton.isDisplayed()) {
+            startButton.click();
+//            WebElement text = driver.findElement(By.id("finish"));
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+            WebElement text = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("finish")));
+            System.out.println(text.getText());
+        }
+        driver.quit();
+    }
+
+    @Test
+    public void dynamicControlsEnableDisableInputBox() {
+        driver.get(baseUrl + "/dynamic_controls");
+        WebDriverWait wait = new WebDriverWait(driver,Duration.ofSeconds(5));
+        driver.findElement(By.cssSelector("#input-example>button")).click();
+            WebElement inputBox = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#input-example>input")));
+        inputBox.sendKeys("Hello world");
+        Assert.assertEquals(inputBox.getAttribute("value"),"Hello wrld" , "value mis match");
+
+        //        inputBox.sendKeys("Hello");  >>> will give ElementNotInteractableException : element not interactable  (if used directly) without any waits
+
+    }
+
+
 }
