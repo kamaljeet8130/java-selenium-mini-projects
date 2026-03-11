@@ -55,8 +55,27 @@ public class Waits {
             WebElement inputBox = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#input-example>input")));
         inputBox.sendKeys("Hello world");
         Assert.assertEquals(inputBox.getAttribute("value"),"Hello wrld" , "value mis match");
-
-        //        inputBox.sendKeys("Hello");  >>> will give ElementNotInteractableException : element not interactable  (if used directly) without any waits
+        // inputBox.sendKeys("Hello");  >>> will give ElementNotInteractableException : element not interactable  (if used directly) without any waits
+    }
+    @Test
+    public void verifyCheckboxIsPresentOnPageLoad(){
+        driver.get(baseUrl + "/dynamic_controls");
+        WebElement checkBox = driver.findElement(By.cssSelector("#checkbox-example #checkbox"));
+        WebElement dynamicButton = driver.findElement(By.cssSelector("#checkbox-example button"));
+        Assert.assertTrue(checkBox.isDisplayed(),"Checkbox should be visible");
+        Assert.assertTrue(checkBox.isEnabled(),"Checkbox should be enabled");
+        Assert.assertFalse(checkBox.isSelected(),"Checkbox should not be selected");
+        Assert.assertEquals(dynamicButton.getText(),"Remove","Button text mismatch");
+        Assert.assertTrue(dynamicButton.isEnabled(),"Button should be enabled");
+    }
+    @Test
+    public void verifyCheckboxIsRemovedWhenRemoveButtonClicked(){
+        driver.get(baseUrl+ "/dynamic_controls");
+        WebDriverWait wait = new WebDriverWait(driver,Duration.ofSeconds(5));
+        WebElement checkBox = driver.findElement(By.id("checkbox"));
+        WebElement dynamicButton = driver.findElement(By.cssSelector("#checkbox-example button"));
+        dynamicButton.click();
+        Assert.assertFalse(checkBox.isDisplayed(),"checkbox is still displayed");
 
     }
 
