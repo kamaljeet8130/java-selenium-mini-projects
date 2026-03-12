@@ -75,8 +75,8 @@ public class Waits {
         WebElement checkBox = driver.findElement(By.id("checkbox"));
         WebElement dynamicButton = driver.findElement(By.cssSelector("#checkbox-example button"));
         dynamicButton.click();
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("checkbox")));
         Assert.assertFalse(checkBox.isDisplayed(),"checkbox is still displayed");
-
     }
 
 
