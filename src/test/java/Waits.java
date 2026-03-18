@@ -1,56 +1,43 @@
+import base.BaseTest;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.time.Duration;
 
-public class Waits {
-    WebDriver driver;
-    String baseUrl = "https://the-internet.herokuapp.com";
-
-    @BeforeMethod
-    public void getDriver() {
-        driver = new ChromeDriver();
-        driver.manage().window().maximize();
-    }
+public class Waits extends BaseTest {
 
     @Test
     public void elementOnPageThatIsHidden() {
         String endpoint = "/dynamic_loading/1";
-        driver.get(baseUrl + endpoint);
+        navigate(endpoint);
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
         WebElement startButton = driver.findElement(By.cssSelector("#start>button"));
         startButton.click();
         String text = wait
                 .until(ExpectedConditions.visibilityOfElementLocated(By.id("finish")))
                 .getText();
-        System.out.println(text);
     }
 
     @Test
     public void ElementRenderedAfterTheFact() {
-        driver.get(baseUrl + "/dynamic_loading/2");
+        navigate(  "/dynamic_loading/2");
         WebElement startButton = driver.findElement(By.cssSelector("#start>button"));
         if (startButton.isDisplayed()) {
             startButton.click();
-//            WebElement text = driver.findElement(By.id("finish"));
             WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
             WebElement text = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("finish")));
-            System.out.println(text.getText());
         }
         driver.quit();
     }
 
     @Test
     public void dynamicControlsEnableDisableInputBox() {
-        driver.get(baseUrl + "/dynamic_controls");
+        navigate(  "/dynamic_controls");
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
         driver.findElement(By.cssSelector("#input-example>button")).click();
         WebElement inputBox = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#input-example>input")));
@@ -61,7 +48,7 @@ public class Waits {
 
     @Test
     public void verifyCheckboxIsPresentOnPageLoad() {
-        driver.get(baseUrl + "/dynamic_controls");
+        navigate( "/dynamic_controls");
         WebElement checkBox = driver.findElement(By.cssSelector("#checkbox-example #checkbox"));
         WebElement dynamicButton = driver.findElement(By.cssSelector("#checkbox-example button"));
         Assert.assertTrue(checkBox.isDisplayed(), "Checkbox should be visible");
@@ -73,7 +60,7 @@ public class Waits {
 
     @Test
     public void verifyCheckboxIsRemovedWhenRemoveButtonClicked() {
-        driver.get(baseUrl + "/dynamic_controls");
+        navigate(  "/dynamic_controls");
         By dynamicButtonLocator = By.cssSelector("#checkbox-example button");
         By checkboxLocator = By.id("checkbox");
         By message = By.id("message");
@@ -87,7 +74,7 @@ public class Waits {
 
     @Test
     public void verifyCheckboxIsAddedWhenAddButtonClicked() {
-        driver.get(baseUrl + "/dynamic_controls");
+        navigate(  "/dynamic_controls");
         By buttonLocator = By.cssSelector("#checkbox-example button");
         By checkBoxLocator = By.id("checkbox");
         By messageLocator = By.id("message");
@@ -106,7 +93,7 @@ public class Waits {
 
     @Test
     public void verifyButtonTextChangesAfterRemovingCheckbox() {
-        driver.get(baseUrl + "/dynamic_controls");
+        navigate(  "/dynamic_controls");
         By buttonLocator = By.cssSelector("#checkbox-example button");
         By messageLocator = By.id("message");
         WebDriverWait wait   = new WebDriverWait(driver,Duration.ofSeconds(5));
@@ -121,7 +108,7 @@ public class Waits {
 
     @Test
     public void verifyButtonTextChangesAfterAddingCheckbox(){
-        driver.get(baseUrl + "/dynamic_controls");
+        navigate(  "/dynamic_controls");
         By buttonLocator = By.cssSelector("#checkbox-example button");
         By messageLocator = By.id("message");
         WebDriverWait wait = new WebDriverWait(driver,Duration.ofSeconds(5));
@@ -135,7 +122,7 @@ public class Waits {
     }
     @Test
     public void verifyInputFieldIsDisabledByDefault(){
-        driver.get(baseUrl+ "/dynamic_controls");
+        navigate( "/dynamic_controls");
         By inputFieldLocator = By.cssSelector("#input-example input");
         WebElement inputField = driver.findElement(inputFieldLocator);
         Assert.assertTrue(inputField.isDisplayed());
@@ -145,7 +132,7 @@ public class Waits {
 
     @Test
     public void verifyInputFieldIsEnabledWhenEnableButtonClicked(){
-        driver.get(baseUrl + "/dynamic_controls");
+        navigate(  "/dynamic_controls");
         WebDriverWait wait = new WebDriverWait(driver,Duration.ofSeconds(5));
         By inputFieldLocator = By.cssSelector("#input-example input");
         By enableDisableButtonLocator = By.cssSelector("#input-example button");
@@ -160,15 +147,16 @@ public class Waits {
 
     @Test
     public void verifyUserCanEnterTextAfterInputIsEnabled(){
-        driver.get(baseUrl + "/dynamic_controls");
+        navigate(  "/dynamic_controls");
         WebDriverWait wait = new WebDriverWait(driver,Duration.ofSeconds(5));
         By inputFieldLocator = By.cssSelector("#input-example input");
         By enableDisableButtonLocator = By.cssSelector("#input-example button");
         WebElement inputField = driver.findElement(inputFieldLocator);
         driver.findElement(enableDisableButtonLocator).click();
         wait.until(ExpectedConditions.elementToBeClickable(inputField));
-        inputField.sendKeys("Hello world");
-        Assert.assertEquals(inputField.getAttribute("value"),"Hello world");
+        String inputString = "Hello world";
+        inputField.sendKeys(inputString);
+        Assert.assertEquals(inputField.getAttribute("value"),inputString);
     }
 
     @AfterMethod

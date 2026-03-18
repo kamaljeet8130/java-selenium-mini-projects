@@ -7,11 +7,15 @@ import org.testng.annotations.BeforeMethod;
 
 public class BaseTest {
     protected static WebDriver driver;
+    String baseUrl = "https://the-internet.herokuapp.com";
 
     @BeforeMethod
     public void setup(){
         driver = new ChromeDriver();
         driver.manage().window().maximize();
+    }
+    public void navigate(String path){
+        driver.get(baseUrl + path);
     }
     @AfterMethod
     public void tearDown(){
