@@ -77,6 +77,22 @@ public class Checkboxes extends BaseTest {
         navigate(CHECKBOX_ENDPOINT);
         checkedUncheckedCheckbox();
         Assert.assertEquals(getCheckedCheckboxCount(),2);
+    }
+
+    @Test
+    public void verifyUncheckingCheckCheckbox(){
+        navigate(CHECKBOX_ENDPOINT);
+        uncheckedCheckedCheckbox();
+        Assert.assertEquals(getUncheckedCheckboxCount(),2);
+    }
+
+    @Test
+    public void verifyIndividualCheckboxBehaviour(){
+        navigate(CHECKBOX_ENDPOINT);
+        List<WebElement> checkboxes = getCheckboxes();
+        for(WebElement checkbox:checkboxes){
+            System.out.println(checkbox.getText());
+        }
 
     }
 }
