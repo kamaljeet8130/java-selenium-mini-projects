@@ -1,4 +1,4 @@
-package webdrivermethods;
+package webdrivermethods.getmethods;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
