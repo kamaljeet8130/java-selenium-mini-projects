@@ -5,9 +5,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.Select;
-
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
 
 public class SelectDropdownInteractionDemo {
@@ -29,7 +27,5 @@ public class SelectDropdownInteractionDemo {
         for(WebElement country : countryList){
             System.out.println(country.getText());
         }
-
-
     }
 }
