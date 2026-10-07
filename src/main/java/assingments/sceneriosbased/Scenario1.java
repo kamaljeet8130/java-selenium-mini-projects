@@ -30,29 +30,25 @@ public class Scenario1 {
 
         List<WebElement> priceList = driver.findElements(By.xpath("//table//td[6]"));
 
-        float sum = 0;
-        List<Float> prices = new ArrayList<>();
-        for(WebElement price : priceList){
-            String removeSymmbol = price.getText().replace("$","");
-            float floatVal = Float.parseFloat(removeSymmbol);
-            prices.add(floatVal);
-        }
-        Collections.sort(prices);
-        float lowestPrice = prices.get(0);
-        System.out.println(prices);
-        String result = String.format("$%.2f",lowestPrice);
-        System.out.println(result);
+        float lowestValue = Integer.MAX_VALUE;
+        WebElement lowestPriceElent = null;
+        for (WebElement price : priceList) {
+            String removeSymmbol = price.getText().replace("$", "");
+            float currentValue = Float.parseFloat(removeSymmbol);
+            if (currentValue < lowestValue) {
+                lowestValue = currentValue;
+                lowestPriceElent = price;
+            }
 
-        for(WebElement price : priceList){
-            if(price.getText().equals(result)){
-                driver.findElement(
-                        By.xpath("//table//td[6][text()='" + result + "']/preceding-sibling::td[5]")
-                ).click();            }
         }
-        System.out.println(driver.findElement(By.tagName("h2")).getText());
+        lowestPriceElent.findElement(
+                By.xpath("./preceding-sibling::td[5]")
+        ).click();
+
+        System.out.println(driver.findElement(By.tagName("h2")).
+                getText());
 
         driver.quit();
-
     }
 
 }
