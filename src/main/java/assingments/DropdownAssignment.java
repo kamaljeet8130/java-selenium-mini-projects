@@ -4,10 +4,10 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -95,8 +95,6 @@ public class DropdownAssignment {
         countrySelect.selectByVisibleText("India");
         String actualSelectedCounty = countrySelect.getFirstSelectedOption().getText();
         Assert.assertEquals(actualSelectedCounty,countryToSelect);
-        stateDropDown = driver.findElement(By.cssSelector("select#state-list"));
-        stateDropDown = wait.until(ExpectedConditions)
         Select stateSelect = new Select(stateDropDown);
         List<WebElement> stateOptions = stateSelect.getOptions();
         System.out.println(stateOptions.size());
@@ -106,12 +104,12 @@ public class DropdownAssignment {
     }
 
 
-//
-//    @AfterMethod
-//    public void tearDown() {
-//        if (driver != null) {
-//            driver.quit();
-//        }
-//    }
+
+    @AfterMethod
+    public void tearDown() {
+        if (driver != null) {
+            driver.quit();
+        }
+    }
 }
 
